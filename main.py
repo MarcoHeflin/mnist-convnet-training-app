@@ -3,8 +3,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
-NavigationToolbar2Tk)
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
 import pickle
 from tensorflow import keras
 from keras.models import load_model
@@ -173,7 +172,7 @@ def loadModel(model_name):
     currentModel = load_model(storage_path+model_name+'.h5')
 
 # vector to be used in the visualization of the softmax layers output for each epoch using grand tour method.
-# essentially 10 equinormal vectors from the origin to represent the 10 different classes/dimensions.
+# essentially 10 vectors of length one from the origin to represent the 10 different classes/dimensions.
 # representing a 10 dimensional space with 10 2-dimensional vectors
 dimensions_vectors = np.array([[1,0],[scos(sp.pi/5),ssin(sp.pi/5)],[scos(2*sp.pi/5),ssin(2*sp.pi/5)],[scos(3*sp.pi/5),ssin(3*sp.pi/5)],
               [scos(4*sp.pi/5),ssin(4*sp.pi/5)],[scos(5*sp.pi/5),ssin(5*sp.pi/5)],[scos(6*sp.pi/5),ssin(6*sp.pi/5)],
@@ -231,19 +230,21 @@ def visualizeSoftmaxLayerWithGrandTour(predictions):
         ax.arrow(0.0, 0.0, dimensions_vectors[i][0], dimensions_vectors[i][1], head_width=0.0, head_length=0.0, color=colors[i], length_includes_head=True)
         # ax.plot(predictions_dict[i]["X"], predictions_dict[i]["Y"], "o", markersize=2, color=colors[0], label=str(0))
 
-    p0, = ax.plot(predictions_dict[0]["X"], predictions_dict[0]["Y"], "o", markersize=2, color=colors[0], label=str(0))
-    p1, = ax.plot(predictions_dict[1]["X"], predictions_dict[1]["Y"], "o", markersize=2, color=colors[1], label=str(1))
-    p2, = ax.plot(predictions_dict[2]["X"], predictions_dict[2]["Y"], "o", markersize=2, color=colors[2], label=str(2))
-    p3, = ax.plot(predictions_dict[3]["X"], predictions_dict[3]["Y"], "o", markersize=2, color=colors[3], label=str(3))
-    p4, = ax.plot(predictions_dict[4]["X"], predictions_dict[4]["Y"], "o", markersize=2, color=colors[4], label=str(4))
-    p5, = ax.plot(predictions_dict[5]["X"], predictions_dict[5]["Y"], "o", markersize=2, color=colors[5], label=str(5))
-    p6, = ax.plot(predictions_dict[6]["X"], predictions_dict[6]["Y"], "o", markersize=2, color=colors[6], label=str(6))
-    p7, = ax.plot(predictions_dict[7]["X"], predictions_dict[7]["Y"], "o", markersize=2, color=colors[7], label=str(7))
-    p8, = ax.plot(predictions_dict[8]["X"], predictions_dict[8]["Y"], "o", markersize=2, color=colors[8], label=str(8))
-    p9, = ax.plot(predictions_dict[9]["X"], predictions_dict[9]["Y"], "o", markersize=2, color=colors[9], label=str(9))
+    markersize = 4
+
+    p0, = ax.plot(predictions_dict[0]["X"], predictions_dict[0]["Y"], "o", markersize=markersize, color=colors[0], label=str(0))
+    p1, = ax.plot(predictions_dict[1]["X"], predictions_dict[1]["Y"], "o", markersize=markersize, color=colors[1], label=str(1))
+    p2, = ax.plot(predictions_dict[2]["X"], predictions_dict[2]["Y"], "o", markersize=markersize, color=colors[2], label=str(2))
+    p3, = ax.plot(predictions_dict[3]["X"], predictions_dict[3]["Y"], "o", markersize=markersize, color=colors[3], label=str(3))
+    p4, = ax.plot(predictions_dict[4]["X"], predictions_dict[4]["Y"], "o", markersize=markersize, color=colors[4], label=str(4))
+    p5, = ax.plot(predictions_dict[5]["X"], predictions_dict[5]["Y"], "o", markersize=markersize, color=colors[5], label=str(5))
+    p6, = ax.plot(predictions_dict[6]["X"], predictions_dict[6]["Y"], "o", markersize=markersize, color=colors[6], label=str(6))
+    p7, = ax.plot(predictions_dict[7]["X"], predictions_dict[7]["Y"], "o", markersize=markersize, color=colors[7], label=str(7))
+    p8, = ax.plot(predictions_dict[8]["X"], predictions_dict[8]["Y"], "o", markersize=markersize, color=colors[8], label=str(8))
+    p9, = ax.plot(predictions_dict[9]["X"], predictions_dict[9]["Y"], "o", markersize=markersize, color=colors[9], label=str(9))
 
     # Defining the slider button
-    ax_slide = plt.axes([0.15, 0.2, .6, .05])     # xpos, ypos, width, height
+    ax_slide = plt.axes([0.22, 0.2, .6, .07])     # xpos, ypos, width, height
     # Properties of the slider
     epochs_slider = Slider(ax_slide, 'Epoch', valmin=1, valmax=len(predictions), valinit=1, valstep=1)
 
@@ -291,7 +292,7 @@ root.title('MNIST-Convnet Training App')
 
 # fix screen size
 screen_width = 1200
-screen_height = 1000
+screen_height = 900
 root.geometry(str(screen_width)+"x"+str(screen_height))
 root.resizable(width=False, height=False)   # not supporting resizable windows currently
 
@@ -352,7 +353,7 @@ def openResultsPage():
     # get the saved models name we want to load from the spinner then load it from the saved files
     #saved_model_name = saved_models_spinner.get()
     saved_model_name = saved_models_spinner.get()
-    if saved_model_name == "":
+    if saved_model_name not in saved_models:
         openHomePage()
         return
     #print("saved model name selected: {0}".format(saved_model_name))
@@ -392,7 +393,7 @@ def openGrandTourPage():
     # get the saved models name we want to load from the spinner then load it from the saved files
     #saved_model_name = saved_models_spinner.get()
     saved_model_name = saved_models_spinner.get()
-    if saved_model_name == "":
+    if saved_model_name not in saved_models:
         openHomePage()
         return
     #print("saved model name selected: {0}".format(saved_model_name))
@@ -582,28 +583,36 @@ info_frame = Frame(root, width=screen_width, height=screen_height, bg="gray")
 Label(info_frame, text='App Info', font=LARGE_FONT).pack(pady=10)
 app_info = "This is a GUI desktop application to give people with little to no experience working with neural " \
            "networks an easy to use interface where they can train and experiment with neural networks.\n\n" \
-           "In this app we are working the MNIST dataset, which is a set of 60000 training samples, 10000 testing samples" \
+           "In this app we are working the MNIST dataset, which is a set of 60000 training samples, 10000 testing samples " \
            "where each sample is a 28x28 image representing a handwritten digit 0-9.\n The goal of our neural network is for " \
-           "it to correctly classify samples/images as the correct digit that they represent. We hope that" \
-           "after training a number of epochs on the 60000 training samples,\n that the model will perform well on the testing" \
-           "samples, which are previously unseen by the model. The trained model performs well when it classifies all or most" \
+           "it to correctly classify samples/images as the correct digit that they represent. We hope that " \
+           "after training a number of epochs on the 60000 training samples,\n that the model will perform well on the testing " \
+           "samples, which are previously unseen by the model. The trained model performs well when it classifies all or most " \
            "of the testing samples correctly.\n\n" \
-           "In this application you as the user are allowed to specify the following hyperparameters when training the neural network model:\n" \
-           "1. Number of epochs - the number of epochs or iterations of training the model will perform on the training set. Each iteration the model learns.\n" \
-           "2. Learning Rate - the learning rate affects how fast the model learns. Simply put, we are using stochastic gradient descent to optimize the model\n" \
+           "In this application you as the user are allowed to specify the following hyperparameters when training the neural network model:\n\n" \
+           "1. Number of epochs - the number of epochs or iterations of training the model will perform on the training set. Each iteration the model learns.\n\n" \
+           "2. Learning Rate - the learning rate affects how fast the model learns. Simply put, we are using stochastic gradient descent to optimize the model\n\n" \
            "each epoch, which adjust the weights of the model according to the negative gradient and the learning rate determines how much the weights are\n" \
-           "adjusted at the end of each epoch/batch.\n" \
+           "adjusted at the end of each epoch/batch.\n\n" \
            "3. Batch Size - This also affects how quickly the model learns. Essentially the model trains over mini-batches of batch size oppose to the whole \n" \
            "60000 samples in the training set, so it adjusts the weights much more frequently and learns faster over one epoch when we have a smaller batch size.\n" \
-           "Smaller batch sizes are more computationally expensive.\n" \
-           "4. Momentum - momentum allows the gradients of previous batches or epochs affect the change in weights of the current epoch. The older gradients are \n" \
-           "expontentially decaying, but they still have an effect on the current epoch's weight adjustments or \"learning\". This helps reduce the gradient exploding\n" \
-           "and gradient vanishing problems.\n\n" \
-           "After you, the user, trains a model you will be displayed the results of the training, and be given the option to save the model.\n" \
-           "You are able to go back and view the training results for any of the models you save as well as the hyperparameters used in training the model.\n" \
+           "Smaller batch sizes are more computationally expensive.\n\n" \
+           "4. Momentum - momentum allows the gradients of previous batches or epochs to affect the change in weights of the current epoch. The gradient is calculated \n" \
+           "as an aggregate of the current iterations gradient and the gradients from past iterations. The older gradients are exponentially decaying,\n" \
+           "but they still have an effect on the current epoch's weight adjustments or \"learning\". This helps reduce the gradient exploding\n" \
+           "and gradient vanishing problems. The momentum rate set here is the rate of exponential decay of previous iterations gradients.\n\n" \
+           "After you, the user, trains a model you will be displayed the results of the training, and be given the option to save the model. You are\n" \
+           "able to go back and view the training results for any of the models you save as well as the hyperparameters used in training the model.\n" \
            "You are also able to delete saved models you no longer need.\n\n" \
-           "The training results displayed will include:\n" \
-           "The accuracy and loss plots, which shows the accuracy and loss on the training and testing sets after each epoch of training.\n"
+           "The training results displayed will include:\n\n" \
+           "1. The accuracy and loss plots, which shows the accuracy and loss on the training and testing sets after each epoch of training.\n\n" \
+           "2. The user will also be able to visualize the learning of each model on the test set from epoch to epoch using a basic 2d visualization dubbed\n" \
+           "the 'Grand Tour'; this is not the true 'Grand Tour' representation since it does not rotate about all 10 dimensions, but essentially this\n" \
+           "visualization technique shows the grouping of the test samples into 10 distinct classes and shows how each test sample moves toward its correct\n" \
+           "label or classification as training persists. How we do this is by converting our 10 dimensional space into 10 equal length 2d vectors and using\n" \
+           "these as axes where the softmax output of each test sample is a size 10 vector with each index corresponding to one of the 10 vectors.\n\n" \
+           "This application should provide you, the user, an easy way to tweak the different hyperparameters mentioned above and visualize the training results so that you\n" \
+           "can find the optimal values for the hyperparameters for this model, and also observe different cases of learning caused by different hyperparameter choices."
 
 Label(info_frame, text=app_info, font=SMALL_FONT).pack(pady=10)
 Button(info_frame, text="Back to Home", command=openHomePage, font=MEDIUM_FONT).pack(pady=10)
